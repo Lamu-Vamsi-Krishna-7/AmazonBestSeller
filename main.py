@@ -9,9 +9,9 @@ logging.basicConfig(level=logging.INFO)
 csv_path = r"D:/AmazonBestSeller/best_sellers_data2.csv"
 try:
     df = pd.read_csv(csv_path)
-    logging.info("✅ File loaded successfully.")
+    logging.info("File loaded successfully.")
 except FileNotFoundError:
-    logging.error("❌ CSV file not found. Please check the path.")
+    logging.error("CSV file not found. Please check the path.")
     exit()
 
 # Preprocess
@@ -34,9 +34,9 @@ try:
         database='amazon_software'
     )
     cursor = connection.cursor()
-    logging.info("✅ Connected to MySQL database.")
+    logging.info("Connected to MySQL database.")
 except mysql.connector.Error as e:
-    logging.error(f"❌ MySQL connection failed: {e}")
+    logging.error(f"MySQL connection failed: {e}")
     exit()
 
 # Insert data
@@ -50,14 +50,14 @@ data = df[['product_title', 'product_price', 'product_star_rating',
 
 cursor.executemany(insert_query, data)
 connection.commit()
-print(f"\n✅ {cursor.rowcount} rows inserted into MySQL successfully.")
+print(f"\n{cursor.rowcount} rows inserted into MySQL successfully.")
 
 # ----------------------------------
 # 📲 INTERACTIVE ANALYSIS MENU
 # ----------------------------------
 print(df)
 def display_menu():
-    print("\n📊 Select an option:")
+    print("\nSelect an option:")
     print("1. Show Top 10 Best-Selling Software by Review Count")
     print("2. Show Average Rating and Reviews by Country")
     print("3. Show Top 5 Most Reviewed Software Products")
@@ -79,7 +79,7 @@ while True:
 
     match choice:
         case "1":
-            print("\n📊 Top 10 Best-Selling Software by Review Count:")
+            print("\n Top 10 Best-Selling Software by Review Count:")
             cursor.execute("""
                 SELECT product_title, product_star_rating, product_num_ratings
                 FROM software_products
@@ -92,7 +92,7 @@ while True:
             print(df_result)
 
         case "2":
-            print("\n🌍 Average Rating and Reviews by Country:")
+            print("\n Average Rating and Reviews by Country:")
             cursor.execute("""
                 SELECT 
                     country,
@@ -108,7 +108,7 @@ while True:
             print(df_result)
 
         case "3":
-            print("\n🔥 Top 5 Most Reviewed Software Products:")
+            print("\n Top 5 Most Reviewed Software Products:")
             cursor.execute("""
                 SELECT product_title, product_num_ratings, country
                 FROM software_products
@@ -123,28 +123,28 @@ while True:
         
 
         case "4":
-            print("\n🔍 Detecting Outliers in Pricing and Ratings...")
+            print("\n Detecting Outliers in Pricing and Ratings...")
 
             price_outliers = detect_outliers(df, 'product_price')
             rating_outliers = detect_outliers(df, 'product_star_rating')
 
-            print("\n💰 Price Outliers (Top 5):")
+            print("\n Price Outliers (Top 5):")
             df_result.index += 1
             print(price_outliers[['product_title', 'product_price', 'country']].head(5))
 
-            print("\n⭐ Rating Outliers (Top 5):")
+            print("\n Rating Outliers (Top 5):")
             print(rating_outliers[['product_title', 'product_star_rating', 'country']].head(5))
 
-            print(f"\n📌 Found {len(price_outliers)} price outliers and {len(rating_outliers)} rating outliers.")
+            print(f"\n Found {len(price_outliers)} price outliers and {len(rating_outliers)} rating outliers.")
 
         case "5":
-            print("\n👋 Exiting. Goodbye!")
+            print("\n Exiting. Goodbye!")
             break
 
         case _:
-            print("❌ Invalid choice. Please enter a number between 1 and 5.")
+            print(" Invalid choice. Please enter a number between 1 and 5.")
 
 # Cleanup
 cursor.close()
 connection.close()
-print("✅ MySQL connection closed.")
+print("MySQL connection closed.")
